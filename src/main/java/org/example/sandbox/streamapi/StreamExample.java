@@ -1,6 +1,7 @@
 package org.example.sandbox.streamapi;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -51,7 +52,7 @@ public class StreamExample {
 
         // reduce
         int sum = 0;
-        for (int x = 1; x<=5; x++) {
+        for (int x = 1; x <= 5; x++) {
             if (x % 2 == 0) {
                 sum += x;
             }
@@ -71,5 +72,26 @@ public class StreamExample {
                 .reduce(2, Integer::sum);
         System.out.println(totalSum);
 
+        // random ints
+        System.out.println("Random ints:");
+        Random random = new Random();
+        random.ints(1, 11)
+                .limit(50)
+                .forEach(System.out::println);
+
+        // IntStream Generate method
+        System.out.println("IntStream Generate:");
+        final AtomicInteger counter = new AtomicInteger(1);
+        IntStream.generate(counter::getAndIncrement)
+                .filter(evenOnly)
+                .limit(10)
+                .forEach(System.out::println);
+
+        // stream of random strings
+        System.out.println("Stream of random strings:");
+        String randomString = Stream.generate(new StringGenerator())
+                .limit(128)
+                .collect(Collectors.joining());
+        System.out.println(randomString);
     }
 }
