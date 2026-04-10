@@ -254,6 +254,7 @@ public class BinaryTree<T> implements Tree<T> {
     }
 
     private void postOrder(BinaryTreeNode<T> node, Queue<T> tempList) {
+
         //Left -> Right -> Root
         if (node != null) {
             postOrder(node.left, tempList);

@@ -2,6 +2,7 @@ package org.example.sandbox.trees.binarysearchtrees;
 
 import org.example.sandbox.trees.ElementNotFoundException;
 import org.example.sandbox.trees.Tree;
+import org.example.sandbox.trees.binarytrees.BinaryTree;
 
 import java.util.*;
 
@@ -74,17 +75,34 @@ public class BinarySearchTree<T extends Comparable> implements Tree<T> {
         return (target.getElement());
     }
 
-    private BinaryTreeNode<T> findNode(T targetElement, BinaryTreeNode<T> next) {
+   /* old code that was not efficient
+   I asked copilot to check for efficiency and it found this which is very cool.
+    copilot then generated the code below
+
+   private BinaryTreeNode<T> findNode(T targetElement, BinaryTreeNode<T> next) {
+
+   // base case - didnt find what we're looking for
         if (next == null) return null;
+//base casse - found what we're looking for
+        if (next.getElement().equals(targetElement)) return next;
 
-        if (next.getElement()
-                .equals(targetElement)) return next;
+//Use the BST property: go left if target is smaller, right if larger or equal
+if(targetElement.compareTo(next.getElement()) <0) {
+return findNode(targetElement, next.getLeft()
+else {
+return findNode(targetElement, next.getRight())
 
-        BinaryTreeNode<T> temp = findNode(targetElement, next.getLeft());
 
-        if (temp == null) temp = findNode(targetElement, next.getRight());
-
-        return temp;
+    }*/
+    private BinaryTreeNode<T> findNode(T targetElement, BinaryTreeNode<T> next) {
+        while (next != null && next.getElement() != null) {
+            int comparison = targetElement.compareTo(next.getElement());
+            if (comparison == 0) {
+                return next;
+            }
+            next = comparison < 0 ? next.getLeft() : next.getRight();
+        }
+        return null;
     }
 
     @Override
@@ -176,7 +194,14 @@ public class BinarySearchTree<T extends Comparable> implements Tree<T> {
     }
 
     private void preOrder(BinaryTreeNode<T> node, Queue<T> tempList) {
-        // TODO implement pre order iterator
+
+        //Root -> Left -> Right
+        if (node != null) {
+            tempList.add(node.element);
+            preOrder(node.left, tempList);
+            preOrder(node.right, tempList);
+
+        }
     }
 
     public Iterator<T> iteratorInOrder() {
@@ -188,7 +213,14 @@ public class BinarySearchTree<T extends Comparable> implements Tree<T> {
     }
 
     private void inOrder(BinaryTreeNode<T> node, Queue<T> tempList) {
-        // TODO implement in order iterator
+
+        //Left -> Root -> Right
+        if (node != null) {
+            inOrder(node.left, tempList);
+            tempList.add(node.element);
+            inOrder(node.right, tempList);
+
+        }
     }
 
     public Iterator<T> iteratorPostOrder() {
@@ -200,7 +232,14 @@ public class BinarySearchTree<T extends Comparable> implements Tree<T> {
     }
 
     private void postOrder(BinaryTreeNode<T> node, Queue<T> tempList) {
-        // TODO implement post order iterator
+
+        //Left -> Right -> Root
+        if (node != null) {
+            postOrder(node.left, tempList);
+            postOrder(node.right, tempList);
+            tempList.add(node.element);
+
+        }
     }
 
     public Iterator<T> iteratorLevelOrder() {
@@ -213,7 +252,30 @@ public class BinarySearchTree<T extends Comparable> implements Tree<T> {
 
     private void levelOrder(BinaryTreeNode<T> node, Queue<T> tempList) {
 
-        // TODO implement level order iterator
+
+        // temporary node queue
+        Queue<BinaryTreeNode<T>> queue = new LinkedList<>();
+        queue.add(node);
+
+        //while we have nodes to iterate...
+        while(!queue.isEmpty()) {
+
+            //store node values
+            BinaryTreeNode<T> tempNode = queue.poll();
+            tempList.add(tempNode.element);
+
+            //store left node if not null
+            if (tempNode.left != null) {
+                queue.add(tempNode.left);
+            }
+
+            //store right node if not null
+            if (tempNode.right != null) {
+                queue.add(tempNode.right);
+
+            }
+
+        }
 
     }
 
